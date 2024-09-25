@@ -6,7 +6,7 @@ import { AuthContext } from '../../App';
 export function LoginScreen({ navigation }: any) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { setAuthToken } = useContext(AuthContext);
+  const { setAuthToken, setUserId } = useContext(AuthContext);
 
   const AUTH_API_BASE_URL = 'https://api.devgui.info'
   const handleLogin = async () => {
@@ -29,7 +29,7 @@ export function LoginScreen({ navigation }: any) {
 
       if (response.ok) {
         setAuthToken(result.access_token);
-
+        setUserId(result.id)
         navigation.navigate('Products');
         console.log('lol')
       } else {

@@ -1,7 +1,7 @@
-
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Modal, TextInput, Alert } from 'react-native';
 import { AuthContext } from '../../App';
+import { useIsFocused } from '@react-navigation/native';
 
 interface IProduct {
   id: string;
@@ -14,10 +14,9 @@ interface IProduct {
   updatedAt: string;
 }
 
-export function ProductScreen() {
+export function ProductScreen({ navigation }: any) {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [newProductName, setNewProductName] = useState('');
   const { authToken } = useContext(AuthContext);
 
   const toggleModal = () => {
@@ -44,14 +43,18 @@ export function ProductScreen() {
       Alert.alert('Erro', 'Ocorreu um erro ao buscar os produtos.');
     }
   };
-
-  const addProduct = () => {
-    toggleModal();
-  };
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    if (isFocused) {
+      fetchProducts();
+      console.log("Products fetched")
+    }
+  }, [isFocused]);
+
+  const openProductInfo = (productId: string) => {
+    navigation.navigate('ProductInfo', { productId });
+  };
 
   return (
     <View style={styles.container}>
@@ -59,11 +62,12 @@ export function ProductScreen() {
         data={products}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.productItem}>
-            <Text style={styles.productText}>{item.name}</Text>
-            <Text style={styles.productText}>{item.quantity}</Text>
-
-          </View>
+          <TouchableOpacity onPress={() => openProductInfo(item.id)}>
+            <View style={styles.productItem}>
+              <Text style={styles.productText}>{item.name}</Text>
+              <Text style={styles.productText}>{item.quantity}</Text>
+            </View>
+          </TouchableOpacity>
         )}
       />
       <TouchableOpacity style={styles.addButton} onPress={toggleModal}>
@@ -76,11 +80,9 @@ export function ProductScreen() {
             <Text style={styles.modalTitle}>Adicionar Novo Produto</Text>
             <TextInput
               placeholder="Nome do Produto"
-              value={newProductName}
-              onChangeText={setNewProductName}
               style={styles.input}
             />
-            <TouchableOpacity style={styles.modalButton} onPress={addProduct}>
+            <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
               <Text style={styles.modalButtonText}>Adicionar</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButtonCancel} onPress={toggleModal}>
@@ -103,6 +105,9 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: '#fff',
     borderRadius: 5,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 10,
     borderColor: '#ddd',
     borderWidth: 1,
