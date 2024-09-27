@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { AuthContext } from '../../App';
 
 interface IProduct {
@@ -17,7 +17,6 @@ export function ProductInfoScreen({ route }: any) {
   const [description, setDescription] = useState<string>('');
   const [price, setPrice] = useState<string>('');
   const [quantity, setQuantity] = useState<string>('');
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const { authToken, userId } = useContext(AuthContext);
   const fetchProductDetails = async () => {
     try {
@@ -35,7 +34,6 @@ export function ProductInfoScreen({ route }: any) {
         setDescription(data.description);
         setPrice(data.price.toString());
         setQuantity(data.quantity.toString());
-        setImageUrl(data.imageUrl);
       } else {
         Alert.alert('Erro', 'Falha ao buscar detalhes do produto.');
       }
@@ -132,11 +130,6 @@ export function ProductInfoScreen({ route }: any) {
         <Text style={styles.label}>Preço Total</Text>
         <Text style={styles.totalPrice}>{`R$ ${calculateTotalPrice().toFixed(2).replace('.', ',')}`}</Text>
 
-        {imageUrl ? (
-          <Image source={{ uri: imageUrl }} style={styles.productImage} />
-        ) : (
-          <Image source={require('../../assets/no-image.png')} style={styles.productImage} />
-        )}
 
         <TouchableOpacity style={styles.updateButton} onPress={handleUpdateProduct}>
           {/* Wrap button text in a <Text> component */}
@@ -176,12 +169,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#333',
     marginVertical: 10,
-  },
-  productImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginTop: 20,
   },
   updateButton: {
     backgroundColor: '#4CAF50',
