@@ -34,8 +34,8 @@ Este é um aplicativo de controle de estoque desenvolvido para a empresa Power V
 
 1. Clone o repositório:
    ```
-   git clone https://github.com/seu-usuario/power-vision-estoque.git
-   cd power-vision-estoque
+   git clone git@github.com:GuilhermeBarroso-sys/power-vision.git
+   cd power-vision
    ```
    
 2. Instale as dependências do projeto:
